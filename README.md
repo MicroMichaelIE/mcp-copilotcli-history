@@ -1,4 +1,4 @@
-# mcp-server-copilot-history
+# mcp-copilotcli-history
 
 An MCP server that provides tools for searching through GitHub Copilot's conversation history stored in `~/.copilot/session-state/`.
 
@@ -18,19 +18,19 @@ An MCP server that provides tools for searching through GitHub Copilot's convers
 When using [`uv`](https://docs.astral.sh/uv/) no specific installation is needed:
 
 ```bash
-uvx mcp-server-copilot-history
+uvx mcp-copilotcli-history
 ```
 
 ### Using pip
 
 ```bash
-pip install mcp-server-copilot-history
+pip install mcp-copilotcli-history
 ```
 
 After installation, run as a module:
 
 ```bash
-python -m mcp_server_copilot_history
+python -m mcp_copilotcli_history
 ```
 
 ## Configuration
@@ -47,7 +47,7 @@ Add to your `claude_desktop_config.json`:
   "mcpServers": {
     "copilot-history": {
       "command": "uvx",
-      "args": ["mcp-server-copilot-history"]
+      "args": ["mcp-copilotcli-history"]
     }
   }
 }
@@ -62,7 +62,7 @@ Add to your `claude_desktop_config.json`:
   "mcpServers": {
     "copilot-history": {
       "command": "python",
-      "args": ["-m", "mcp_server_copilot_history"]
+      "args": ["-m", "mcp_copilotcli_history"]
     }
   }
 }
@@ -81,7 +81,7 @@ Add the configuration to your user-level MCP configuration file. Open the Comman
   "servers": {
     "copilot-history": {
       "command": "uvx",
-      "args": ["mcp-server-copilot-history"]
+      "args": ["mcp-copilotcli-history"]
     }
   }
 }
@@ -96,7 +96,7 @@ Add the configuration to your user-level MCP configuration file. Open the Comman
   "servers": {
     "copilot-history": {
       "command": "python",
-      "args": ["-m", "mcp_server_copilot_history"]
+      "args": ["-m", "mcp_copilotcli_history"]
     }
   }
 }
@@ -111,7 +111,7 @@ Add to your Zed `settings.json`:
 "context_servers": {
   "copilot-history": {
     "command": "uvx",
-    "args": ["mcp-server-copilot-history"]
+    "args": ["mcp-copilotcli-history"]
   }
 }
 ```
@@ -179,7 +179,7 @@ Once configured, you can ask your AI assistant questions like:
 Use the MCP inspector to debug:
 
 ```bash
-npx @modelcontextprotocol/inspector uvx mcp-server-copilot-history
+npx @modelcontextprotocol/inspector uvx mcp-copilotcli-history
 ```
 
 ## License
