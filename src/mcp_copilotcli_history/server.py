@@ -11,7 +11,6 @@ import re
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 from mcp.server.fastmcp import FastMCP
 
@@ -19,8 +18,8 @@ from mcp.server.fastmcp import FastMCP
 mcp = FastMCP(
     name="Copilot Session History",
     instructions="""
-    This server provides tools to search and explore GitHub Copilot's conversation history.
-    Use these tools when you need to:
+    This server provides tools to search and explore GitHub Copilot's
+    conversation history. Use these tools when you need to:
     - Find past conversations about specific topics
     - Look up how something was implemented before
     - Review previous discussions or decisions
@@ -36,7 +35,7 @@ mcp = FastMCP(
 
 def get_session_state_dir() -> Path:
     """Get the Copilot session state directory path.
-    
+
     Uses SESSION_STATE_DIR environment variable if set, otherwise defaults
     to ~/.copilot/session-state/
     """
@@ -47,7 +46,7 @@ def get_session_state_dir() -> Path:
     return Path.home() / ".copilot" / "session-state"
 
 
-def list_session_files(session_dir: Optional[Path] = None) -> list[Path]:
+def list_session_files(session_dir: Path | None = None) -> list[Path]:
     """List all JSONL session files, sorted by modification time (newest first)."""
     if session_dir is None:
         session_dir = get_session_state_dir()
@@ -71,7 +70,7 @@ def get_session_title(file_path: Path, max_length: int = 80) -> str:
     title = "(no user message)"
 
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if not line:
@@ -155,7 +154,7 @@ def extract_searchable_content(entry: dict) -> str:
 @mcp.tool()
 def search_sessions(
     query: str,
-    event_type: Optional[str] = None,
+    event_type: str | None = None,
     max_results: int = 20,
     case_sensitive: bool = False,
 ) -> list[dict]:
@@ -168,7 +167,8 @@ def search_sessions(
 
     Args:
         query: The search term or regex pattern to find
-        event_type: Optional filter for event type (user.message, assistant.message, tool.result)
+        event_type: Optional filter for event type
+            (user.message, assistant.message, tool.result)
         max_results: Maximum number of results to return (default: 20)
         case_sensitive: Whether to perform case-sensitive matching (default: False)
 
@@ -197,7 +197,7 @@ def search_sessions(
         session_title = get_session_title(file_path)
 
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 for line in f:
                     if len(results) >= max_results:
                         break
@@ -279,7 +279,7 @@ def list_recent_sessions(limit: int = 10) -> list[dict]:
         start_time = "unknown"
         model = "default"
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 first_line = f.readline().strip()
                 if first_line:
                     entry = json.loads(first_line)
@@ -333,7 +333,7 @@ def get_session_stats() -> dict:
         stats["total_size_mb"] += file_path.stat().st_size / (1024 * 1024)
 
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 for line in f:
                     line = line.strip()
                     if not line:
@@ -382,9 +382,7 @@ def get_session_stats() -> dict:
             if stats["date_range"]["newest"]
             else None,
         },
-        "event_types": dict(
-            sorted(stats["event_types"].items(), key=lambda x: -x[1])
-        ),
+        "event_types": dict(sorted(stats["event_types"].items(), key=lambda x: -x[1])),
         "models_used": dict(sorted(stats["models_used"].items(), key=lambda x: -x[1])),
     }
 
@@ -422,7 +420,7 @@ def get_session_conversation(
     messages = []
 
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             for line in f:
                 if len(messages) >= max_messages:
                     break
@@ -526,7 +524,7 @@ def search_by_file_path(
 
 @mcp.tool()
 def search_tool_usage(
-    tool_name: Optional[str] = None,
+    tool_name: str | None = None,
     max_results: int = 20,
 ) -> list[dict]:
     """
@@ -536,7 +534,8 @@ def search_tool_usage(
     by tool name. Useful for finding examples of how tools were used.
 
     Args:
-        tool_name: Optional tool name to filter by (e.g., "create_file", "run_in_terminal")
+        tool_name: Optional tool name to filter by
+            (e.g., "create_file", "run_in_terminal")
         max_results: Maximum number of results to return (default: 20)
 
     Returns:
@@ -557,7 +556,7 @@ def search_tool_usage(
         session_title = get_session_title(file_path)
 
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 for line in f:
                     if len(results) >= max_results:
                         break
