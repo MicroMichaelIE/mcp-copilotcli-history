@@ -6,6 +6,7 @@ history stored in ~/.copilot/session-state/ JSONL files.
 """
 
 import json
+import os
 import re
 from collections import defaultdict
 from datetime import datetime
@@ -34,7 +35,15 @@ mcp = FastMCP(
 
 
 def get_session_state_dir() -> Path:
-    """Get the Copilot session state directory path."""
+    """Get the Copilot session state directory path.
+    
+    Uses SESSION_STATE_DIR environment variable if set, otherwise defaults
+    to ~/.copilot/session-state/
+    """
+    env_path = os.environ.get("SESSION_STATE_DIR")
+    if env_path:
+        path = Path(env_path).expanduser()
+        return path
     return Path.home() / ".copilot" / "session-state"
 
 
