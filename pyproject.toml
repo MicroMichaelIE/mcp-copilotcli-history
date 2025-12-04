@@ -5,29 +5,36 @@ description = "MCP server for searching GitHub Copilot conversation history"
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Michael Lawlor" }]
-keywords = ["mcp", "copilot", "history", "search", "ai"]
+keywords = ["mcp", "copilot", "history", "search", "ai", "model-context-protocol"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 dependencies = [
     "mcp>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "build>=1.0.0",
+    "ruff>=0.8.0",
+    "pyright>=1.1.0",
 ]
 
 [project.scripts]
 mcp-copilotcli-history = "mcp_copilotcli_history:main"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/mcp-copilotcli-history"
-Repository = "https://github.com/yourusername/mcp-copilotcli-history"
-Issues = "https://github.com/yourusername/mcp-copilotcli-history/issues"
+Homepage = "https://github.com/MicroMichaelIE/mcp-copilotcli-history"
+Repository = "https://github.com/MicroMichaelIE/mcp-copilotcli-history"
+Changelog = "https://github.com/MicroMichaelIE/mcp-copilotcli-history/blob/main/CHANGELOG.md"
+Issues = "https://github.com/MicroMichaelIE/mcp-copilotcli-history/issues"
 
 [build-system]
 requires = ["hatchling"]
@@ -35,3 +42,14 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/mcp_copilotcli_history"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.pyright]
+pythonVersion = "3.13"
+typeCheckingMode = "basic"
