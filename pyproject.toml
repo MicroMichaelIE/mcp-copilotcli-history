@@ -24,6 +24,8 @@ dependencies = [
 dev = [
     "build>=1.0.0",
     "pre-commit>=4.0.0",
+    "pytest>=8.0.0",
+    "pytest-timeout>=2.0.0",
     "ruff>=0.8.0",
     "pyright>=1.1.0",
 ]
@@ -54,3 +56,10 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 [tool.pyright]
 pythonVersion = "3.13"
 typeCheckingMode = "basic"
+
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
+testpaths = ["tests"]
+addopts = "-v --tb=short"

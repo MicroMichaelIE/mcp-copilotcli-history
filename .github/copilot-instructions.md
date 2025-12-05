@@ -6,7 +6,8 @@ This is an MCP (Model Context Protocol) server that provides tools for searching
 
 ## Tech Stack
 
-- Python 3.10+
+- Python 3.13+
+- uv for environment management
 - FastMCP (`mcp` package) for MCP server implementation
 - Hatchling for build system
 
