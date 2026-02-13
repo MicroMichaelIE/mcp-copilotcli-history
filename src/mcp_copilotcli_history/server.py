@@ -52,7 +52,7 @@ def list_session_files(session_dir: Path | None = None) -> list[Path]:
         session_dir = get_session_state_dir()
     if not session_dir.exists():
         return []
-    files = list(session_dir.glob("*.jsonl"))
+    files = list(session_dir.rglob("*.jsonl"))
     return sorted(files, key=lambda f: f.stat().st_mtime, reverse=True)
 
 
@@ -62,7 +62,7 @@ _session_titles_cache: dict[str, str] = {}
 
 def get_session_title(file_path: Path, max_length: int = 80) -> str:
     """Extract the first user message as the session title."""
-    session_id = file_path.stem
+    session_id = file_path.parent.name
 
     if session_id in _session_titles_cache:
         return _session_titles_cache[session_id]
@@ -193,7 +193,7 @@ def search_sessions(
         if len(results) >= max_results:
             break
 
-        session_id = file_path.stem
+        session_id = file_path.parent.name
         session_title = get_session_title(file_path)
 
         try:
@@ -273,7 +273,7 @@ def list_recent_sessions(limit: int = 10) -> list[dict]:
     sessions = []
 
     for file_path in files:
-        session_id = file_path.stem
+        session_id = file_path.parent.name
         size_kb = file_path.stat().st_size / 1024
 
         start_time = "unknown"
@@ -412,11 +412,21 @@ def get_session_conversation(
         return [{"error": f"Session directory not found: {session_dir}"}]
 
     # Find the session file (supports partial ID matching)
-    files = list(session_dir.glob(f"{session_id}*.jsonl"))
-    if not files:
+    # Sessions are stored as <session_dir>/<session_id>/events.jsonl
+    matches = [
+        p
+        for p in session_dir.iterdir()
+        if p.is_dir() and p.name.startswith(session_id)
+    ]
+    if not matches:
         return [{"error": f"Session not found: {session_id}"}]
 
-    file_path = files[0]
+    # Use the first matching session directory's JSONL file
+    jsonl_files = list(matches[0].glob("*.jsonl"))
+    if not jsonl_files:
+        return [{"error": f"No JSONL file found in session: {matches[0].name}"}]
+
+    file_path = jsonl_files[0]
     messages = []
 
     try:
@@ -552,7 +562,7 @@ def search_tool_usage(
         if len(results) >= max_results:
             break
 
-        session_id = file_path.stem
+        session_id = file_path.parent.name
         session_title = get_session_title(file_path)
 
         try:

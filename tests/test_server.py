@@ -32,8 +32,10 @@ def temp_session_dir(tmp_path: Path):
     session_dir = tmp_path / "session-state"
     session_dir.mkdir()
 
-    # Create sample session file
-    session1 = session_dir / "abc123-session1.jsonl"
+    # Create sample session in subdirectory (real structure)
+    session1_dir = session_dir / "abc123-session1"
+    session1_dir.mkdir()
+    session1 = session1_dir / "events.jsonl"
     entries = [
         {
             "type": "session.start",
@@ -79,8 +81,10 @@ def temp_session_dir(tmp_path: Path):
         for entry in entries:
             f.write(json.dumps(entry) + "\n")
 
-    # Create another session file
-    session2 = session_dir / "def456-session2.jsonl"
+    # Create another session in subdirectory
+    session2_dir = session_dir / "def456-session2"
+    session2_dir.mkdir()
+    session2 = session2_dir / "events.jsonl"
     entries2 = [
         {
             "type": "session.start",
@@ -175,7 +179,7 @@ class TestGetSessionTitle:
 
     def test_extracts_first_user_message(self, temp_session_dir: Path):
         """Test extracting title from first user message."""
-        session_file = temp_session_dir / "abc123-session1.jsonl"
+        session_file = temp_session_dir / "abc123-session1" / "events.jsonl"
         title = get_session_title(session_file)
         assert title == "How do I create a Python function?"
 
@@ -183,7 +187,9 @@ class TestGetSessionTitle:
         """Test that long titles are truncated."""
         session_dir = tmp_path / "sessions"
         session_dir.mkdir()
-        session_file = session_dir / "long-title.jsonl"
+        session_subdir = session_dir / "long-title-session"
+        session_subdir.mkdir()
+        session_file = session_subdir / "events.jsonl"
 
         long_content = "A" * 200
         entry = {
@@ -200,12 +206,12 @@ class TestGetSessionTitle:
 
     def test_caches_results(self, temp_session_dir: Path):
         """Test that titles are cached."""
-        session_file = temp_session_dir / "abc123-session1.jsonl"
+        session_file = temp_session_dir / "abc123-session1" / "events.jsonl"
 
         # First call
         title1 = get_session_title(session_file)
 
-        # Check cache
+        # Check cache - key is parent directory name
         assert "abc123-session1" in _session_titles_cache
 
         # Second call should use cache
