@@ -9,7 +9,7 @@ import json
 import os
 import re
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
@@ -100,9 +100,10 @@ def get_session_title(file_path: Path, max_length: int = 80) -> str:
 
 
 def format_timestamp(ts: str) -> str:
-    """Format ISO timestamp for display."""
+    """Format ISO timestamp for display in local timezone."""
     try:
         dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+        dt = dt.astimezone()  # Convert to system local timezone
         return dt.strftime("%Y-%m-%d %H:%M")
     except (ValueError, AttributeError):
         return ts[:16] if ts else "unknown"

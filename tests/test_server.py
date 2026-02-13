@@ -217,9 +217,14 @@ class TestFormatTimestamp:
     """Tests for format_timestamp function."""
 
     def test_format_iso_timestamp(self):
-        """Test formatting ISO timestamp."""
+        """Test formatting ISO timestamp converts to local timezone."""
+        from datetime import datetime, timezone
+
         result = format_timestamp("2025-12-01T10:30:45Z")
-        assert result == "2025-12-01 10:30"
+        # Compute expected local time from UTC
+        utc_dt = datetime(2025, 12, 1, 10, 30, 45, tzinfo=timezone.utc)
+        expected = utc_dt.astimezone().strftime("%Y-%m-%d %H:%M")
+        assert result == expected
 
     def test_format_invalid_timestamp(self):
         """Test handling invalid timestamp."""
