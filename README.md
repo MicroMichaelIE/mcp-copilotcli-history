@@ -10,6 +10,8 @@ An MCP server that provides tools for searching through GitHub Copilot's convers
 - **View Conversations**: Read the full conversation from any session
 - **Search by File**: Find sessions that referenced specific files
 - **Search Tool Usage**: Find examples of how tools were used
+- **Find Empty Sessions**: Identify empty, abandoned, or trivially short sessions for cleanup
+- **Delete Sessions**: Safely remove low-value session directories (dry-run by default)
 
 ## Installation
 
@@ -164,6 +166,22 @@ Find sessions where specific tools were used.
 - `tool_name` (optional): Tool name to filter by
 - `max_results` (optional): Maximum results (default: 20)
 
+### find_empty_sessions
+
+Scan all session history and identify sessions that are empty, abandoned, or trivially short.
+
+**Arguments:**
+- `include_trivial` (optional): Include trivially short sessions (default: true)
+- `max_content_length` (optional): Character threshold for "trivial" classification (default: 200)
+
+### delete_sessions
+
+Delete session directories from Copilot history. Performs a dry run by default — set `confirm` to true to actually delete.
+
+**Arguments:**
+- `session_ids` (required): List of session IDs to delete
+- `confirm` (optional): Set to true to actually delete; false for dry run (default: false)
+
 ## Example Use Cases
 
 Once configured, you can ask your AI assistant questions like:
@@ -173,6 +191,15 @@ Once configured, you can ask your AI assistant questions like:
 - "Find conversations where I worked on main.py"
 - "How did I use the create_file tool before?"
 - "Show me the conversation from session abc123"
+
+### Session Cleanup Workflow
+
+You can use the session cleanup tools to keep your history tidy:
+
+1. **Find low-value sessions**: Ask "Find any empty or abandoned sessions in my Copilot history"
+2. **Review the results**: The tool returns each session's category (`empty`, `abandoned`, or `trivial`), a reason, and the session title so you can decide what to keep
+3. **Delete what you don't need**: Ask "Delete sessions aaa111, bbb222, ccc333" — this does a dry run first showing what would be deleted and bytes freed
+4. **Confirm deletion**: Ask "Delete those sessions with confirm set to true" to actually remove them
 
 ## Debugging
 
